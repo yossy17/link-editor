@@ -1,0 +1,139 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+.linkEditor {
+  font-family: "Roboto", sans-serif !important;
+  user-select: none !important;
+  -moz-user-select: none !important;
+  -webkit-user-select: none !important;
+  -ms-user-select: none !important;
+  width: 1000px;
+  min-width: 300px !important;
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  margin: 0 !important;
+  padding: 0 15px 15px !important;
+  background-color: #fff !important;
+  color: #333 !important;
+  position: fixed !important;
+  top: 20px !important;
+  left: 20px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 8px !important;
+  z-index: calc(infinity) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15) !important;
+  pointer-events: auto !important;
+  resize: horizontal !important;
+  overflow: auto !important;
+}
+.linkEditor__header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  height: 65px !important;
+  cursor: grab !important;
+  border-bottom: 1px solid #c9c9c9 !important;
+  resize: horizontal !important;
+}
+.linkEditor__header:active {
+  cursor: grabbing !important;
+}
+.linkEditor__header__title {
+  font-size: 18px !important;
+  color: #333 !important;
+}
+.linkEditor__header__totalCount {
+  font-size: 16px !important;
+  color: #333 !important;
+}
+.linkEditor__header__closeBtn {
+  font-size: 20px !important;
+  cursor: pointer !important;
+  color: #888 !important;
+  transition: color 0.3s ease !important;
+}
+.linkEditor__header__closeBtn:hover {
+  color: #555 !important;
+}
+.linkEditor__content {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+  gap: 15px !important;
+  margin-block: 10px !important;
+  min-width: 250px !important;
+  height: 480px !important;
+  overflow-y: auto !important;
+  scroll-snap-type: y mandatory !important;
+}
+.linkEditor__content__pair {
+  display: flex !important;
+  justify-content: center !important;
+  flex-direction: column !important;
+  height: 230px !important;
+  border: 1px solid #ccc !important;
+  padding: 0 8px !important;
+  border-radius: 4px !important;
+  background-color: #f9f9f9 !important;
+  scroll-snap-align: start !important;
+}
+.linkEditor__content__pair label {
+  font-weight: bold !important;
+  margin-bottom: 4px !important;
+}
+.linkEditor__content__pair label:nth-child(-n+3) {
+  display: flex !important;
+  flex-flow: column !important;
+}
+.linkEditor__content__pair label:nth-child(n+4) {
+  display: flex !important;
+  align-items: center !important;
+}
+.linkEditor__content__pair__openInNewTabLabel.disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+.linkEditor__content__pair__openInNewTabLabel.disabled input {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+.linkEditor__content__pair__title, .linkEditor__content__pair__selector, .linkEditor__content__pair__urlPattern {
+  padding: 5px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 5px !important;
+}
+.linkEditor__content__pair__ctrlBtn {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+.linkEditor__content__pair__ctrlBtn__removeBtn {
+  margin-left: auto !important;
+}
+.linkEditor__content__pair__ctrlBtn__moveUpBtn {
+  margin-right: 5px !important;
+}
+.linkEditor__content__pair__ctrlBtn__moveDownBtn {
+  margin-left: 5px !important;
+}
+.linkEditor__content__pair__ctrlBtn__moveUpBtn, .linkEditor__content__pair__ctrlBtn__moveDownBtn, .linkEditor__content__pair__ctrlBtn__removeBtn {
+  background-color: #f9f9f9 !important;
+  padding: 6px 8px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+}
+.linkEditor__content__pair__ctrlBtn__moveUpBtn:hover, .linkEditor__content__pair__ctrlBtn__moveDownBtn:hover, .linkEditor__content__pair__ctrlBtn__removeBtn:hover {
+  background-color: #f0f0f0 !important;
+  color: #555 !important;
+}
+.linkEditor__addBtn {
+  position: relative !important;
+  bottom: 0 !important;
+  padding: 8px 12px !important;
+  background-color: #f0f0f0 !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+.linkEditor__addBtn:hover {
+  background-color: #e0e0e0 !important;
+}/*# sourceMappingURL=Setting_Panel.css.map */
