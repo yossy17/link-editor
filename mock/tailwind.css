@@ -20,6 +20,8 @@
   --tw-ring-shadow: 0 0 #0000;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
+  --scrollbar-thumb: #c29523;
+  --scrollbar-track: #ecdcb2;
 } /*! tailwindcss v3.4.14 | MIT License | https://tailwindcss.com*/
 #linkEditor *,
 #linkEditor :after,
@@ -28,7 +30,8 @@
   border-width: 0;
   border-style: solid;
   border-color: #e5e7eb;
-  --tw-content: '';
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, initial) var(--scrollbar-track, initial) !important;
 }
 #linkEditor {
   -webkit-text-size-adjust: 100%;
@@ -66,7 +69,7 @@
   --tw-bg-opacity: 1 !important;
   background-color: rgb(251 250 248 / var(--tw-bg-opacity)) !important;
   padding: 1rem !important;
-  font-size: 1rem !important;
+  font-size: 16px !important;
   line-height: 1.5rem !important;
   font-weight: 700 !important;
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
@@ -75,6 +78,8 @@
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
     var(--tw-shadow) !important;
   outline-width: 0px !important;
+  /* scrollbar-color: red orange;
+  scrollbar-width: 4px; */
 }
 #linkEditor #logo {
   font-family: 'Poppins';
@@ -147,6 +152,12 @@
 #linkEditor .\!ml-auto {
   margin-left: auto !important;
 }
+#linkEditor .\!hidden {
+  display: none !important;
+}
+#linkEditor .flex {
+  display: flex;
+}
 #linkEditor .\!flex {
   display: flex !important;
 }
@@ -193,9 +204,6 @@
 }
 #linkEditor .cursor-not-allowed {
   cursor: not-allowed;
-}
-#linkEditor .\!grid-cols-\[1fr_auto\] {
-  grid-template-columns: 1fr auto !important;
 }
 #linkEditor .\!grid-cols-\[repeat\(auto-fill\2c minmax\(theme\(spacing\.64\)\2c 1fr\)\)\] {
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)) !important;
@@ -260,6 +268,10 @@
 #linkEditor .\!pt-8 {
   padding-top: 2rem !important;
 }
+#linkEditor .\!text-base {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
 #linkEditor .\!text-xl {
   font-size: 1.25rem !important;
   line-height: 1.75rem !important;
@@ -273,6 +285,9 @@
 }
 #linkEditor .\!accent-\[\#eec968\] {
   accent-color: #eec968 !important;
+}
+#linkEditor .opacity-50 {
+  opacity: 0.5;
 }
 #linkEditor .\!shadow-md {
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
