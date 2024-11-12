@@ -33,6 +33,10 @@
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb, initial) var(--scrollbar-track, initial) !important;
 }
+:after,
+:before {
+  --tw-content: '';
+}
 #linkEditor {
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
@@ -81,7 +85,8 @@
   /* scrollbar-color: red orange;
   scrollbar-width: 4px; */
 }
-#linkEditor #logo {
+#linkEditor #linkEditor__logo,
+#linkEditor #\$\{UI_ID\}__logo {
   font-family: 'Poppins';
 }
 #linkEditor button,
