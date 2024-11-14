@@ -204,6 +204,9 @@
     skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
     scaleY(var(--tw-scale-y)) !important;
 }
+#linkEditor .cursor-pointer {
+  cursor: pointer;
+}
 #linkEditor .cursor-grab {
   cursor: grab;
 }
