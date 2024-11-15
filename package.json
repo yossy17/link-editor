@@ -7,7 +7,7 @@
   "keywords": [],
   "license": "ISC",
   "scripts": {
-    "tailwind": "bunx tailwindcss -o mock/tailwind.css"
+    "tailwind": "bunx tailwindcss -o mock/tailwind.css --minify"
   },
   "devDependencies": {
     "@types/bun": "latest",
