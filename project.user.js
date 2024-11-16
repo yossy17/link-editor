@@ -21,10 +21,10 @@
   const STORAGE_KEY = 'linkEditorSelectorTitlePairs';
   const UI_ID = 'linkEditor';
   const SHORTCUT_KEY = {
-    ctrlKey: false,
+    ctrlKey: true,
     shiftKey: false,
     altKey: true,
-    keyCode: 'o',
+    keyCode: '0',
   }; // 設定パネルを開くショートカットキー
 
   // グローバル状態
