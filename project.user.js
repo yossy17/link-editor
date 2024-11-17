@@ -1,14 +1,17 @@
 // ==UserScript==
 // @name                Link Editor
 // @description         Customize link titles and behavior with a user-friendly interface. Add tooltips and control link opening in new tabs across websites.
-// @version             1.1
+// @version             2.0
 // @author              Yos_sy
 // @match               *://*/*
 // @namespace           http://tampermonkey.net/
 // @icon                https://freeiconshop.com/wp-content/uploads/edd/link-open-flat.png
 // @license             MIT
 // @run-at              document-end
+// @require             https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js
+// @resource            TAILWIND_CSS https://raw.githubusercontent.com/yossy17/link-editor/master/dist/tailwind.css
 // @grant               GM_addStyle
+// @grant               GM_getResourceText
 // @grant               GM_registerMenuCommand
 // @grant               GM_setValue
 // @grant               GM_getValue
@@ -105,36 +108,104 @@
   } = {}) {
     // セレクタとタイトルのペアを表す要素を作成する
     const pairDiv = document.createElement('div');
-    pairDiv.className = `${UI_ID}__content__pair`;
+    pairDiv.id = `${UI_ID}__pair`;
+    pairDiv.className =
+      '!flex !h-80 !flex-col !gap-y-2 !rounded-md !bg-white !p-4 !pt-8 !shadow-md';
 
     pairDiv.innerHTML = `
-      <label>Title: <input type="text" class="${UI_ID}__content__pair__title" placeholder="Title" value="${title}"></label>
-      <label>Selector: <input type="text" class="${UI_ID}__content__pair__selector" placeholder="Selector" value="${selector}"></label>
-      <label>URLPattern: <input type="text" class="${UI_ID}__content__pair__urlPattern" placeholder="URLPattern" value="${urlPattern}"></label>
-      <label><input type="checkbox" class="${UI_ID}__content__pair__onOffSwitchingBtn" ${isEnabled ? 'checked' : ''}>ON/OFF</label>
-      <label class="${UI_ID}__content__pair__openInNewTabLabel ${isEnabled ? '' : 'disabled'}">
-        <input type="checkbox" class="${UI_ID}__content__pair__openInNewTabBtn" ${openInNewTab ? 'checked' : ''} ${isEnabled ? '' : 'disabled'}>
-        Open link in a new tab
-      </label>
-      <div class="${UI_ID}__content__pair__ctrlBtn">
-        <button class="${UI_ID}__content__pair__ctrlBtn__moveUpBtn">▲</button>
-        <button class="${UI_ID}__content__pair__ctrlBtn__moveDownBtn">▼</button>
-        <button class="${UI_ID}__content__pair__ctrlBtn__removeBtn">🗑️</button>
+      <div class="!flex !flex-col !gap-y-4">
+        <div
+          class="!relative !flex !flex-col before:!absolute before:!bottom-0 before:!left-1/2 before:!inline-block before:!h-0.5 before:!w-0 before:!-translate-x-1/2 before:!bg-[#eec968] before:!duration-300 focus-within:before:!w-full hover:before:!w-full"
+        >
+          <input
+            id="${UI_ID}__title"
+            class="peer !h-full !w-full !border-0 !border-b-2 !border-solid !border-[#e0e0e0] !pb-1 !pl-1 !pt-2 !outline-0 placeholder:opacity-0 placeholder:!duration-300 focus:placeholder:!opacity-100"
+            type="text"
+            placeholder="Example"
+            value="${title}"
+          />
+          <label
+            class="!pointer-events-none !absolute !top-1/2 !-translate-y-1/2 !text-gray-500 !duration-300 peer-focus:!top-0 peer-[&:not(:placeholder-shown)]:!top-0"
+          >
+            Title
+          </label>
+        </div>
+
+        <div
+          class="!relative !flex !flex-col before:!absolute before:!bottom-0 before:!left-1/2 before:!inline-block before:!h-0.5 before:!w-0 before:!-translate-x-1/2 before:!bg-[#eec968] before:!duration-300 focus-within:before:!w-full hover:before:!w-full"
+        >
+          <input
+            id="${UI_ID}__selector"
+            class="peer !h-full !w-full !border-0 !border-b-2 !border-solid !border-[#e0e0e0] !pb-1 !pl-1 !pt-2 !outline-0 placeholder:opacity-0 placeholder:!duration-300 focus:placeholder:!opacity-100"
+            type="text"
+            placeholder="main .example > h4"
+            value="${selector}"
+          />
+          <label
+            class="!pointer-events-none !absolute !top-1/2 !-translate-y-1/2 !text-gray-500 !duration-300 peer-focus:!top-0 peer-[&:not(:placeholder-shown)]:!top-0"
+          >
+            Selector
+          </label>
+        </div>
+
+        <div
+          class="!relative !flex !flex-col before:!absolute before:!bottom-0 before:!left-1/2 before:!inline-block before:!h-0.5 before:!w-0 before:!-translate-x-1/2 before:!bg-[#eec968] before:!duration-300 focus-within:before:!w-full hover:before:!w-full"
+        >
+          <input
+            id="${UI_ID}__urlPattern"
+            class="peer !h-full !w-full !border-0 !border-b-2 !border-solid !border-[#e0e0e0] !pb-1 !pl-1 !pt-2 !outline-0 placeholder:opacity-0 placeholder:!duration-300 focus:placeholder:!opacity-100"
+            type="text"
+            placeholder="https://example.com/*"
+            value="${urlPattern}"
+          />
+          <label
+            class="!pointer-events-none !absolute !top-1/2 !-translate-y-1/2 !text-gray-500 !duration-300 peer-focus:!top-0 peer-[&:not(:placeholder-shown)]:!top-0"
+          >
+            URLPattern
+          </label>
+        </div>
+      </div>
+
+      <div class="!my-auto !flex !flex-col">
+        <label class="!flex !gap-x-1 !accent-[#eec968] cursor-pointer">
+          <input id="${UI_ID}__onOffToggleBtn" type="checkbox" ${isEnabled ? 'checked' : ''} />
+          <span>ON/OFF</span>
+        </label>
+        <label id="${UI_ID}__openInNewTab" class="!flex !gap-x-1 !accent-[#eec968] cursor-pointer ${isEnabled ? '' : 'cursor-not-allowed !opacity-50'}">
+          <input id="${UI_ID}__openInNewTabBtn" type="checkbox" ${openInNewTab ? 'checked' : ''} ${isEnabled ? '' : 'disabled'} />
+          <span>Open in new tab</span>
+        </label>
+      </div>
+
+      <div class="!flex !items-center">
+        <div class="!flex !gap-x-1">
+          <button id="${UI_ID}__moveUpBtn">
+            <i class="fa-regular fa-square-caret-up !size-6"></i>
+          </button>
+          <button id="${UI_ID}__moveDownBtn">
+            <i class="fa-regular fa-square-caret-down !size-6"></i>
+          </button>
+        </div>
+        <div class="!ml-auto !flex !gap-x-1">
+          <button id="${UI_ID}__delBtn">
+            <i class="fa-regular fa-trash-can !size-6"></i>
+          </button>
+        </div>
       </div>
     `;
 
     // 入力とチェックボックスの変更を監視
     ['input', 'change'].forEach((eventType) => {
       pairDiv.addEventListener(eventType, (e) => {
-        if (e.target.classList.contains(`${UI_ID}__content__pair__onOffSwitchingBtn`)) {
-          const openInNewTabLabel = pairDiv.querySelector(
-            `.${UI_ID}__content__pair__openInNewTabLabel`
-          );
-          const openInNewTabBtn = pairDiv.querySelector(
-            `.${UI_ID}__content__pair__openInNewTabBtn`
-          );
-          openInNewTabLabel.classList.toggle('disabled', !e.target.checked);
-          openInNewTabBtn.disabled = !e.target.checked;
+        if (e.target.id === `${UI_ID}__onOffToggleBtn`) {
+          const openInNewTab = pairDiv.querySelector(`#${UI_ID}__openInNewTab`);
+          const openInNewTabBtn = pairDiv.querySelector(`#${UI_ID}__openInNewTabBtn`);
+
+          const isChecked = e.target.checked;
+          openInNewTab.classList.toggle('cursor-not-allowed', !isChecked);
+          openInNewTab.classList.toggle('!opacity-50', !isChecked);
+          openInNewTabBtn.classList.toggle('cursor-not-allowed', !isChecked);
+          openInNewTabBtn.disabled = !isChecked;
         }
         updateSelectorTitlePairs();
         addTitleAndTargetToElements();
@@ -142,21 +213,19 @@
     });
 
     // 削除ボタンのイベントリスナー
-    pairDiv
-      .querySelector(`.${UI_ID}__content__pair__ctrlBtn__removeBtn`)
-      .addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete this selector?')) {
-          pairDiv.remove();
-          updateSelectorTitlePairs();
-        }
-      });
+    pairDiv.querySelector(`#${UI_ID}__delBtn`).addEventListener('click', () => {
+      if (confirm('Are you sure you want to delete this selector?')) {
+        pairDiv.remove();
+        updateSelectorTitlePairs();
+      }
+    });
 
     // 上下移動ボタンのイベントリスナー
     pairDiv
-      .querySelector(`.${UI_ID}__content__pair__ctrlBtn__moveUpBtn`)
+      .querySelector(`#${UI_ID}__moveUpBtn`)
       .addEventListener('click', () => movePair(pairDiv, -1));
     pairDiv
-      .querySelector(`.${UI_ID}__content__pair__ctrlBtn__moveDownBtn`)
+      .querySelector(`#${UI_ID}__moveDownBtn`)
       .addEventListener('click', () => movePair(pairDiv, 1));
 
     return pairDiv;
@@ -176,13 +245,13 @@
 
   function updateSelectorTitlePairs() {
     // セレクタとタイトルのペアを更新する
-    selectorTitlePairs = Array.from($$('.linkEditor__content__pair'))
+    selectorTitlePairs = Array.from($$(`#${UI_ID}__pair`))
       .map((pairElement) => ({
-        title: $(`.${UI_ID}__content__pair__title`, pairElement).value.trim(),
-        selector: $(`.${UI_ID}__content__pair__selector`, pairElement).value.trim(),
-        isEnabled: $(`.${UI_ID}__content__pair__onOffSwitchingBtn`, pairElement).checked,
-        urlPattern: $(`.${UI_ID}__content__pair__urlPattern`, pairElement).value.trim(),
-        openInNewTab: $(`.${UI_ID}__content__pair__openInNewTabBtn`, pairElement).checked,
+        title: $(`#${UI_ID}__title`, pairElement).value.trim(),
+        selector: $(`#${UI_ID}__selector`, pairElement).value.trim(),
+        urlPattern: $(`#${UI_ID}__urlPattern`, pairElement).value.trim(),
+        isEnabled: $(`#${UI_ID}__onOffToggleBtn`, pairElement).checked,
+        openInNewTab: $(`#${UI_ID}__openInNewTabBtn`, pairElement).checked,
       }))
       .filter(({ selector }) => selector);
 
@@ -190,7 +259,7 @@
     addTitleAndTargetToElements();
 
     if (settingsPanel) {
-      $('#totalCount', settingsPanel).textContent = `Total: ${selectorTitlePairs.length}`;
+      $(`#${UI_ID}__totalCount`, settingsPanel).textContent = `Total: ${selectorTitlePairs.length}`;
     }
   }
 
@@ -223,179 +292,55 @@
     // 設定UIを作成する
     const settingsDiv = document.createElement('div');
     settingsDiv.id = UI_ID;
-    settingsDiv.className = UI_ID;
 
     settingsDiv.innerHTML = `
-      <div class="${UI_ID}__header">
-        <h3 class="${UI_ID}__header__title">⚙️Setting</h3>
-        <span id="totalCount" class="${UI_ID}__header__totalCount">Total: ${selectorTitlePairs.length}</span>
-        <button class="${UI_ID}__header__closeBtn">×</button>
+      <div
+        id="${UI_ID}__header"
+        class="!flex !h-16 cursor-grab !items-center !justify-between active:cursor-grabbing"
+      >
+        <div class="!flex !items-center !gap-x-1 !text-xl">
+          <i class="fa-solid fa-gear" style="color: #b4acbc"></i>
+          <h3>Setting</h3>
+        </div>
+
+        <span id="${UI_ID}__totalCount" class="!text-gray-500">Total: ${selectorTitlePairs.length}</span>
+
+        <button id="${UI_ID}__closeBtn"><i class="fa-solid fa-xmark !size-6"></i></button>
       </div>
-      <div class="${UI_ID}__content"></div>
-      <button id="${UI_ID}__addBtn" class="${UI_ID}__addBtn">+</button>
+
+        <div
+          id="${UI_ID}__main"
+          class="!my-4 !grid !h-[24rem] !min-w-64 !grid-cols-[repeat(auto-fill,minmax(theme(spacing.64),1fr))] !gap-4 !overflow-y-auto !text-base"
+        ></div>
+
+      <div class="!flex !h-8 !items-center !justify-between">
+        <button id="${UI_ID}__addBtn">
+          <i class="fa-solid fa-plus !size-6"></i>
+        </button>
+
+        <div class="!flex !items-center">
+          <i class="fa-regular fa-copyright !size-4"></i>
+          <p id="${UI_ID}__logo" class="!text-base">
+            <span>Yo</span><span class="!-tracking-[0.375rem]">s_s</span
+            ><span class="!ml-[0.375rem]">y</span>
+          </p>
+        </div>
+      </div>
     `;
 
     // スタイルを追加
-    GM_addStyle(`
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-.linkEditor {
-  font-family: "Roboto", sans-serif !important;
-  user-select: none !important;
-  -moz-user-select: none !important;
-  -webkit-user-select: none !important;
-  -ms-user-select: none !important;
-  width: 1000px;
-  min-width: 300px !important;
-  font-weight: 400 !important;
-  font-size: 12px !important;
-  font-style: normal !important;
-  margin: 0 !important;
-  padding: 0 15px 15px !important;
-  background-color: #fff !important;
-  color: #333 !important;
-  position: fixed !important;
-  top: 20px !important;
-  left: 20px !important;
-  border: 1px solid #ccc !important;
-  border-radius: 8px !important;
-  z-index: calc(infinity) !important;
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.3),
-    0 4px 6px -2px rgba(0, 0, 0, 0.15) !important;
-  pointer-events: auto !important;
-  resize: horizontal !important;
-  overflow: auto !important;
-}
-.linkEditor__header {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  height: 65px !important;
-  cursor: grab !important;
-  border-bottom: 1px solid #c9c9c9 !important;
-  resize: horizontal !important;
-}
-.linkEditor__header:active {
-  cursor: grabbing !important;
-}
-.linkEditor__header__title {
-  font-size: 18px !important;
-  color: #333 !important;
-}
-.linkEditor__header__totalCount {
-  font-size: 16px !important;
-  color: #333 !important;
-}
-.linkEditor__header__closeBtn {
-  font-size: 20px !important;
-  cursor: pointer !important;
-  color: #888 !important;
-  transition: color 0.3s ease !important;
-}
-.linkEditor__header__closeBtn:hover {
-  color: #555 !important;
-}
-.linkEditor__content {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-  gap: 15px !important;
-  margin-block: 10px !important;
-  min-width: 250px !important;
-  height: 480px !important;
-  overflow-y: auto !important;
-  scroll-snap-type: y mandatory !important;
-}
-.linkEditor__content__pair {
-  display: flex !important;
-  justify-content: center !important;
-  flex-direction: column !important;
-  height: 230px !important;
-  border: 1px solid #ccc !important;
-  padding: 0 8px !important;
-  border-radius: 4px !important;
-  background-color: #f9f9f9 !important;
-  scroll-snap-align: start !important;
-}
-.linkEditor__content__pair label {
-  font-weight: bold !important;
-  margin-bottom: 4px !important;
-}
-.linkEditor__content__pair label:nth-child(-n + 3) {
-  display: flex !important;
-  flex-flow: column !important;
-}
-.linkEditor__content__pair label:nth-child(n + 4) {
-  display: flex !important;
-  align-items: center !important;
-}
-.linkEditor__content__pair__openInNewTabLabel.disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-}
-.linkEditor__content__pair__openInNewTabLabel.disabled input {
-  pointer-events: none !important;
-  cursor: not-allowed !important;
-}
-.linkEditor__content__pair__title,
-.linkEditor__content__pair__selector,
-.linkEditor__content__pair__urlPattern {
-  padding: 5px !important;
-  border: 1px solid #ccc !important;
-  border-radius: 5px !important;
-}
-.linkEditor__content__pair__ctrlBtn {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-}
-.linkEditor__content__pair__ctrlBtn__removeBtn {
-  margin-left: auto !important;
-}
-.linkEditor__content__pair__ctrlBtn__moveUpBtn {
-  margin-right: 5px !important;
-}
-.linkEditor__content__pair__ctrlBtn__moveDownBtn {
-  margin-left: 5px !important;
-}
-.linkEditor__content__pair__ctrlBtn__moveUpBtn,
-.linkEditor__content__pair__ctrlBtn__moveDownBtn,
-.linkEditor__content__pair__ctrlBtn__removeBtn {
-  background-color: #f9f9f9 !important;
-  padding: 6px 8px !important;
-  border: 1px solid #ccc !important;
-  border-radius: 8px !important;
-  cursor: pointer !important;
-}
-.linkEditor__content__pair__ctrlBtn__moveUpBtn:hover,
-.linkEditor__content__pair__ctrlBtn__moveDownBtn:hover,
-.linkEditor__content__pair__ctrlBtn__removeBtn:hover {
-  background-color: #f0f0f0 !important;
-  color: #555 !important;
-}
-.linkEditor__addBtn {
-  position: relative !important;
-  bottom: 0 !important;
-  padding: 8px 12px !important;
-  background-color: #f0f0f0 !important;
-  border: 1px solid #ddd !important;
-  border-radius: 4px !important;
-  cursor: pointer !important;
-}
-.linkEditor__addBtn:hover {
-  background-color: #e0e0e0 !important;
-} /*# sourceMappingURL=Setting_Panel.css.map */
-
-    `);
+    const tailwindCss = GM_getResourceText('TAILWIND_CSS');
+    GM_addStyle(tailwindCss);
 
     document.body.appendChild(settingsDiv);
 
     // イベントリスナー
-    $(`.${UI_ID}__header__closeBtn`, settingsDiv).addEventListener('click', () => {
+    $(`#${UI_ID}__closeBtn`, settingsDiv).addEventListener('click', () => {
       settingsDiv.style.display = 'none';
     });
 
     $(`#${UI_ID}__addBtn`, settingsDiv).addEventListener('click', () => {
-      const settingsContent = $(`.${UI_ID}__content`, settingsDiv);
+      const settingsContent = $(`#${UI_ID}__main`, settingsDiv);
       settingsContent.appendChild(createPairElement({ urlPattern: getCurrentURLPattern() }));
       updateSelectorTitlePairs();
     });
@@ -409,14 +354,14 @@
     // 設定内容を更新する
     if (!settingsPanel) return;
 
-    const settingsContent = $(`.${UI_ID}__content`, settingsPanel);
+    const settingsContent = $(`#${UI_ID}__main`, settingsPanel);
     settingsContent.innerHTML = '';
 
     selectorTitlePairs.forEach((pair) => {
       settingsContent.appendChild(createPairElement(pair));
     });
 
-    $('#totalCount', settingsPanel).textContent = `Total: ${selectorTitlePairs.length}`;
+    $(`#${UI_ID}__totalCount`, settingsPanel).textContent = `Total: ${selectorTitlePairs.length}`;
   }
 
   function setupDraggable(element) {
@@ -428,7 +373,7 @@
       yOffset = 0;
 
     const dragStart = (e) => {
-      if (e.target.closest(`.${UI_ID}__header`)) {
+      if (e.target.closest(`#${UI_ID}__header`)) {
         isDragging = true;
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
@@ -446,7 +391,7 @@
       }
     };
 
-    $(`.${UI_ID}__header`, element).addEventListener('mousedown', dragStart);
+    $(`#${UI_ID}__header`, element).addEventListener('mousedown', dragStart);
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', dragEnd);
   }
@@ -469,5 +414,5 @@
     });
   }
 
-  init(); // スクリプトの初期化を実行
+  init();
 })();
