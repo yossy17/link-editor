@@ -11,7 +11,7 @@ Link Editor is a powerful userscript that enhances web browsing by allowing user
 - Apply customizations to specific URL patterns
 - Easy-to-use settings panel for managing rules
 - Drag-and-drop interface for organizing rules
-- Shortcut key `Alt + 0` to quickly access settings
+- Shortcut key `Ctrl + Alt + 0` to quickly access settings
 
 ## How It Works
 
@@ -22,7 +22,7 @@ Link Editor is a powerful userscript that enhances web browsing by allowing user
 
 ## Usage
 
-- Open the settings panel via the browser's userscript menu or the `Alt + 0` shortcut
+- Open the settings panel via the browser's userscript menu or the `Ctrl + Alt + 0` shortcut
 - Add new rules by clicking the '+' button
 - Configure each rule with:
   - Title: The text to display in the tooltip
